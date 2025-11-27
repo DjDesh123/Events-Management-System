@@ -1,6 +1,6 @@
 package user;
 
-public class user {
+public class User {
     // all attributes needed to make a user
     private int userid;
     private String firstName;
@@ -18,7 +18,7 @@ public class user {
     private accountType accountType;
 
 
-    public user(int userid,String firstName, String lastName, String email, String password, String salt, accountType accountType) {
+    public User(int userid,String firstName, String lastName, String email, String password, String salt, accountType accountType) {
         this.userid = userid;
         this.firstName = firstName;
         this.lastName = lastName;
