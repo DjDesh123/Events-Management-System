@@ -28,7 +28,6 @@ public class Event {
 
 
     //getters
-
     public int getEventid() {
         return eventid;
     }
@@ -60,6 +59,33 @@ public class Event {
     public String getDescription() {
         return description;
     }
+
+    //setters
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setStartDate(int startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(int endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setTimeframe(int timeframe) {
+        this.timeframe = timeframe;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
 
 }
