@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
-    private int eventid;
+    private int eventId;
     private String eventTitle;
     private String location;
     public int startDate;
@@ -15,8 +15,8 @@ public class Event {
     private List<User> attendee;
     private String description;
 
-    public Event(int  eventid, String eventTitle, String location, int startDate, int endDate, int timeframe) {
-        this.eventid = eventid;
+    public Event(int  eventId, String eventTitle, String location, int startDate, int endDate, int timeframe) {
+        this.eventId = eventId;
         this.eventTitle = eventTitle;
         this.location = location;
         this.startDate = startDate;
@@ -28,8 +28,8 @@ public class Event {
 
 
     //getters
-    public int getEventid() {
-        return eventid;
+    public int getEventId() {
+        return eventId;
     }
 
     public String getEventTitle() {
