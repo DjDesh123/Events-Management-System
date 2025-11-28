@@ -1,6 +1,8 @@
 package notifications;
 
-public class Notifications {
+import java.io.Serializable;
+
+public class Notifications implements Serializable {
     private int notId;
     private int userId;
     private int eventId;
