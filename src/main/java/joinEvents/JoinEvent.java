@@ -1,21 +1,21 @@
 package joinEvents;
 
 public class JoinEvent {
-    private int joinid;
+    private int joinId;
     private int userId;
     private int eventId;
 
 
     // constructor
-    public JoinEvent(int joinid, int userid, int eventId) {
-        this.joinid = joinid;
-        this.userId = userid;
+    public JoinEvent(int joinId, int userId, int eventId) {
+        this.joinId = joinId;
+        this.userId = userId;
         this.eventId = eventId;
     }
 
 
-    public int getJoinid() {
-        return joinid;
+    public int getJoinId() {
+        return joinId;
     }
 
     public int getUserId() {
