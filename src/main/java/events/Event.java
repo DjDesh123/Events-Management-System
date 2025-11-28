@@ -2,10 +2,11 @@ package events;
 
 import user.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event {
+public class Event implements Serializable {
     private int eventId;
     private String eventTitle;
     private String location;
