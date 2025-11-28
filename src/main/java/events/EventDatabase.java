@@ -7,26 +7,26 @@ import java.util.Map;
 
 
 public class EventDatabase {
-    private Map<Integer,Event> events = new HashMap();
+    private Map<Integer,Event> eventMap = new HashMap();
 
-    //adds the users to the local database
+    //adds the event to the local database
     public void add(Event event){
-        events.put(event.getEventId(),event);
+        eventMap.put(event.getEventId(),event);
     }
 
-    // gets the certain users infomation
+    // gets the certain event infomation
     public Event get(int EventId){
-        return events.get(EventId);
+        return eventMap.get(EventId);
     }
 
-    // deletes the user from the local database
+    // deletes the event from the local database
     public void delete(int EventId){
-        events.remove(EventId);
+        eventMap.remove(EventId);
     }
 
-    // gets all the users
+    // gets all the event
     public Map<Integer,Event> getEvents(){
-        return events;
+        return eventMap;
     }
 }
 
