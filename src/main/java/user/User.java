@@ -12,7 +12,7 @@ public class User implements Serializable {
     private String salt;
 
     // to improve security and be more efficient than just a string
-    private enum accountType{
+    public enum accountType{
         STUDENT,
         ORGANISER
     }

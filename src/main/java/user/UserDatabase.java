@@ -26,4 +26,15 @@ public class UserDatabase {
     public Map<Integer,User> getUsers(){
         return userMap;
     }
+
+    // helper class
+    public User getByEmail(String email) {
+        for (User user : userMap.values()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
 }
