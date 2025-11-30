@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     // all attributes needed to make a user
-    private int userid;
+    private int userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -12,7 +12,7 @@ public class User implements Serializable {
     private String salt;
 
     // to improve security and be more efficient than just a string
-    private enum accountType{
+    public enum accountType{
         STUDENT,
         ORGANISER
     }
@@ -20,8 +20,8 @@ public class User implements Serializable {
     private accountType accountType;
 
 
-    public User(int userid,String firstName, String lastName, String email, String password, String salt, accountType accountType) {
-        this.userid = userid;
+    public User(int userId,String firstName, String lastName, String email, String password, String salt, accountType accountType) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -33,8 +33,8 @@ public class User implements Serializable {
 
     // all the getters for each attribute
 
-    public int getUserid() {
-        return userid;
+    public int getUserId() {
+        return userId;
     }
 
     public String getEmail() {
