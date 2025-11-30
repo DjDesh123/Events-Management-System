@@ -5,14 +5,14 @@ import util.PasswordHashing;
 public class UserController {
 
     private UserDatabase userDatabase;
-    private  User loggedInUser;
+    private  static User loggedInUser;
 
     public UserController() {
         userDatabase = new UserDatabase();
         UserDatabaseStorage.load();
     }
 
-    public  User getLoggedInUser() {
+    public static User getLoggedInUser() {
         return loggedInUser;
     }
 
@@ -93,7 +93,7 @@ public class UserController {
         else {return null;}
 
         //keeps track of the session
-        User loggedUser = user;
+        loggedInUser = user;
         return user;
     }
 }
