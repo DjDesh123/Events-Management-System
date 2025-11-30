@@ -59,13 +59,13 @@ public class JoinEventController {
         if (current >= event.getMaxAttendees()) return false;
 
         // Add new join record
-        int joinId = joinEventDatabase.getJoinEvents().size() + 1;
+        int joinId = joinEventDatabase.generateNewId();
 
-        JoinEvent join = new JoinEvent(joinId, eventId, user.getUserId());
+        JoinEvent join = new JoinEvent(joinId,user.getUserId(),eventId);
         joinEventDatabase.add(join);
 
-        // Save event database (optional for joins)
-        EventDatabaseStorage.save(eventDatabase.getEvents());
+        // Save event database
+        JoinEventDatabaseStorage.save(joinEventDatabase.getJoinEvents());
 
         return true;
     }
@@ -85,7 +85,7 @@ public class JoinEventController {
 
         joinEventDatabase.delete(joinToRemove);
 
-        EventDatabaseStorage.save(eventDatabase.getEvents());
+        JoinEventDatabaseStorage.save(joinEventDatabase.getJoinEvents());
         return true;
     }
 }

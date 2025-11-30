@@ -8,6 +8,8 @@ public class UserDatabase {
     private Map<Integer,User> userMap = new HashMap<>();
     private AtomicInteger idCounter = new AtomicInteger(0);
 
+
+
     public int generateNewId() {
         return idCounter.incrementAndGet();
     }
