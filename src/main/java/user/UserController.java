@@ -4,7 +4,18 @@ import util.PasswordHashing;
 
 public class UserController {
 
-    private UserDatabase userDatabase = new UserDatabase();
+    private UserDatabase userDatabase;
+    private  User loggedInUser;
+
+    public UserController() {
+        userDatabase = new UserDatabase();
+        UserDatabaseStorage.load();
+    }
+
+    public  User getLoggedInUser() {
+        return loggedInUser;
+    }
+
 
     public boolean signUp(int id, String firstName, String lastName, String email, String password, String accountTypeText) {
 
@@ -81,8 +92,8 @@ public class UserController {
         }
         else {return null;}
 
-
-
-        return null;
+        //keeps track of the session
+        User loggedUser = user;
+        return user;
     }
 }

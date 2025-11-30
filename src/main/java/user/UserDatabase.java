@@ -1,15 +1,23 @@
 package user;
 
-import user.User;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserDatabase {
     private Map<Integer,User> userMap = new HashMap<>();
+    private AtomicInteger idCounter = new AtomicInteger(0);
+
+    public int generateNewId() {
+        return idCounter.incrementAndGet();
+    }
 
     //adds the users to the local database
     public void add(User user){
-        userMap.put(user.getUserid(),user);
+        if (user.getUserId() > idCounter.get()) {
+            idCounter.set(user.getUserId());
+        }
+        userMap.put(user.getUserId(),user);
     }
 
     // gets the certain users infomation
