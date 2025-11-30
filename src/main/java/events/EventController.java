@@ -1,5 +1,6 @@
 package events;
 
+import events.EventDatabase;
 import user.User;
 import user.UserController;
 import java.time.LocalDate;
@@ -10,48 +11,70 @@ import java.util.stream.Collectors;
 
 public class EventController {
 
-    private EventDatabase eventDatabase;
+    private EventDatabase eventDatabase = new  EventDatabase();
 
+    //constructor
+    public EventController() {
+        //loads of creates a local event database
+        eventDatabase = new EventDatabase();
+        //load events from file storage if exists
+        EventDatabaseStorage.load();
+    }
+
+    //validates before creating an event
     public boolean validateEventEntry(String eventTitle, String location, LocalDate startDate, LocalDate endDate,LocalTime startTime,LocalTime endTime,int maxAttendees, List<User> initialAttendees, String description) {
-
+        //checks if reileds are not empty
         if (eventTitle == null || eventTitle.isBlank()) return false;
         if (location == null || location.isBlank()) return false;
         if (startDate == null || endDate == null) return false;
+        //checks if dates are legal
         if (startDate.isBefore(LocalDate.now())) return false;
         if (endDate.isBefore(startDate)) return false;
+        //checks if times are legal
         if (startTime.isBefore(LocalTime.now())) return false;
         if (endTime.isBefore(LocalTime.now())) return false;
+
+        //checks if the attendee number is valid
         if (maxAttendees <= 0) return false;
 
         if (initialAttendees == null) return false;
         if (initialAttendees.size() > maxAttendees) return false;
 
-
+        // ensures that there are no dupes users inside the attendee list
         long unique = initialAttendees.stream().distinct().count();
         if (unique != initialAttendees.size()) return false;
 
+        // checks events doesnt already exist by name
         if (eventDatabase.existsByName(eventTitle)) return false;
 
         return true;
     }
 
+    //creates events
     public boolean createEvent(String eventTitle,String location, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int maxAttendees, List<User> initialAttendees, String description){
 
+        //validates events fields
         if (!validateEventEntry(eventTitle,location,startDate,endDate,startTime,endTime,maxAttendees,initialAttendees,description)){
             return false;
         }
 
+        //generates unique id
         int eventId = eventDatabase.generateNewId();
+
+        // gets the users id
         int creatorId = UserController.getLoggedInUser().getUserId();
 
-
+        //builds the event object
         Event event = new Event(eventId,creatorId,eventTitle,location,startDate,endDate,startTime,endTime,maxAttendees,initialAttendees,description);
+
+        //adds to database and saves
         eventDatabase.add(event);
         EventDatabaseStorage.save(eventDatabase.getEvents());
 
         return true;
     }
 
+    // delets events
     public boolean deleteEvent(int eventId) {
         Event event = eventDatabase.get(eventId);
         if (event == null) return false;
@@ -61,6 +84,7 @@ public class EventController {
         return true;
     }
 
+    //edit event details
     public boolean editEvent(int eventId, String eventTitle, String location, LocalDate startDate, LocalDate endDate,LocalTime startTime,LocalTime endTime ,int maxAttendees,String description) {
 
         Event event = eventDatabase.get(eventId);
@@ -89,6 +113,7 @@ public class EventController {
         return true;
     }
 
+    //gets the upcoming events sorted by the time and the date
     public List<Event> getUpcomingEvents() {
         LocalDate today = LocalDate.now();
 
@@ -103,7 +128,7 @@ public class EventController {
 
     }
 
-
+    // gets all events created by the logged in user
     public List<Event> getUsersEvents() {
         int userId= UserController.getLoggedInUser().getUserId();
 
@@ -118,14 +143,33 @@ public class EventController {
         //figure this logic out later
     }
 
-    public List<Event> getFilteredEvents() {
-        // need to get the filters like if the user wants a certain location maybe events before a certain day and time stuff like that and key word searching
-        //to the apply them to the search to shorten them down
-        // and then send a list which then javaFx can work with and display in like a dropdown box
-        return List.of();
+    // filters events by using Filter
+    public List<Event> getFilteredEvents(Filter filter) {
+        return eventDatabase.getEvents().values().stream()
+                .filter(event -> filter.location == null
+                        || event.getLocation().equalsIgnoreCase(filter.location))
+
+                .filter(event -> filter.keyword == null
+                        || event.getEventTitle().toLowerCase().contains(filter.keyword.toLowerCase())
+                        || event.getDescription().toLowerCase().contains(filter.keyword.toLowerCase()))
+
+                .filter(event -> filter.startDate == null
+                        || !event.getStartDate().isBefore(filter.startDate))
+
+                .filter(event -> filter.endDate == null
+                        || !event.getEndDate().isAfter(filter.endDate))
+
+                .filter(event -> filter.startTime == null
+                        || !event.getStartTime().isBefore(filter.startTime))
+
+                .filter(event -> filter.endTime == null
+                        || !event.getEndTime().isAfter(filter.endTime))
+                .collect(Collectors.toList());
     }
 
 
-    public List<Event> getEventInfo(){System.out.print("working on it ");}
+    public List<Event> getEventInfo(){System.out.print("working on it ");
+        return eventDatabase.getEvents().values().stream().collect(Collectors.toList());
+    }
 
 }
