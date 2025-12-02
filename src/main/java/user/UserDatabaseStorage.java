@@ -6,8 +6,7 @@ import java.util.Map;
 
 public class UserDatabaseStorage {
 
-    // IMPORTANT: For SQLite you must prefix with jdbc:sqlite:
-    private static final String DB_URL = "jdbc:sqlite:UserDatabase.sqlite";
+    static String DB_URL = "jdbc:sqlite:UserDatabase.sqlite";
 
     public static void createTableIfNotExist() {
         String sql =
