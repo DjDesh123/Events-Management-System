@@ -26,7 +26,6 @@ public class JoinEventDatabaseStorage {
         }
     }
 
-    // ------------ LOAD HASHMAP FROM DB ------------
     public static Map<Integer, JoinEvent> load() {
 
         Map<Integer, JoinEvent> joinMap = new HashMap<>();
@@ -53,7 +52,7 @@ public class JoinEventDatabaseStorage {
         return joinMap;
     }
 
-    // ------------ SAVE HASHMAP TO DB ------------
+
     public static void save(Map<Integer, JoinEvent> joinMap) {
 
         try (Connection conn = DriverManager.getConnection(DB_URL);
