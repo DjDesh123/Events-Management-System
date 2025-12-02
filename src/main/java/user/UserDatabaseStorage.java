@@ -11,15 +11,15 @@ public class UserDatabaseStorage {
 
     public static void createTableIfNotExist() {
         String sql =
-            "CREATE TABLE IF NOT EXISTS users ("+
-                "userId INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "firstName TEXT NOT NULL," +
-                "lastName TEXT NOT NULL," +
-                "email TEXT NOT NULL," +
-                "password TEXT NOT NULL," +
-                "salt TEXT NOT NULL," +
-                "accountType TEXT NOT NULL" +
-            ");";
+                "CREATE TABLE IF NOT EXISTS users (" +
+                        "userId INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "firstName TEXT NOT NULL," +
+                        "lastName TEXT NOT NULL," +
+                        "email TEXT NOT NULL," +
+                        "password TEXT NOT NULL," +
+                        "salt TEXT NOT NULL," +
+                        "accountType TEXT NOT NULL" +
+                        ");";
 
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
@@ -62,23 +62,27 @@ public class UserDatabaseStorage {
         return userMap;
     }
 
-    public static void save(User user) {
-        String sql = " INSERT INTO users(firstName,lastName,email,password,salt,accountType) VALUES (?,?,?,?,?,?)";
+    public static void save(Map<Integer, User> userMap) {
+        String sql = "INSERT INTO users(firstName,lastName,email,password,salt,accountType) VALUES (?,?,?,?,?,?)";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
 
-            pstmt.setString(1, user.getFirstName());
-            pstmt.setString(2, user.getLastName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getPassword());
-            pstmt.setString(5, user.getSalt());
-            pstmt.setString(6, user.getAccountType().name());
+            for (User user : userMap.values()) {
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.executeUpdate();
+                    pstmt.setString(1, user.getFirstName());
+                    pstmt.setString(2, user.getLastName());
+                    pstmt.setString(3, user.getEmail());
+                    pstmt.setString(4, user.getPassword());
+                    pstmt.setString(5, user.getSalt());
+                    pstmt.setString(6, user.getAccountType().name());
+
+                    pstmt.executeUpdate();
+                }
+            }
 
         } catch (SQLException e) {
-            System.err.println("Error saving user: " + e.getMessage());
+            System.err.println("Error saving users: " + e.getMessage());
         }
     }
 }
