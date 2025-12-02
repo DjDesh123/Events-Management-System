@@ -1,8 +1,7 @@
 package joinEvents;
 
-import java.io.Serializable;
 
-public class JoinEvent implements Serializable {
+public class JoinEvent {
     private int joinId;
     private int userId;
     private int eventId;

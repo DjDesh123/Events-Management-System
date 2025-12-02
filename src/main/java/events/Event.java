@@ -2,13 +2,12 @@ package events;
 
 import user.User;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event implements Serializable {
+public class Event{
     private int eventId;
     private int creatorId;
     private String eventTitle;
