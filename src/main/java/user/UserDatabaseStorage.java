@@ -8,13 +8,16 @@ public class UserDatabaseStorage {
 
     static String DB_URL = "jdbc:sqlite:UserDatabase.sqlite";
 
+    /**
+     * Ensure the users table exists.
+     */
     public static void createTableIfNotExist() {
         String sql =
                 "CREATE TABLE IF NOT EXISTS users (" +
                         "userId INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "firstName TEXT NOT NULL," +
                         "lastName TEXT NOT NULL," +
-                        "email TEXT NOT NULL," +
+                        "email TEXT NOT NULL UNIQUE," +           // unique email is helpful
                         "password TEXT NOT NULL," +
                         "salt TEXT NOT NULL," +
                         "accountType TEXT NOT NULL" +
@@ -31,9 +34,14 @@ public class UserDatabaseStorage {
         }
     }
 
+    /**
+     * Load all users from the DB. Ensures table exists first.
+     */
     public static Map<Integer, User> load() {
-        Map<Integer, User> userMap = new HashMap<>();
+        // Make sure the table exists before attempting to read.
+        createTableIfNotExist();
 
+        Map<Integer, User> userMap = new HashMap<>();
         String sql = "SELECT * FROM users";
 
         try (Connection conn = DriverManager.getConnection(DB_URL);
@@ -61,27 +69,43 @@ public class UserDatabaseStorage {
         return userMap;
     }
 
+    /**
+     * Save all users. Ensures table exists first and uses a transaction for speed/atomicity.
+     */
     public static void save(Map<Integer, User> userMap) {
-        String sql = "INSERT INTO users(firstName,lastName,email,password,salt,accountType) VALUES (?,?,?,?,?,?)";
+        // Ensure table exists first.
+        createTableIfNotExist();
+
+        // Using a transaction and a single connection improves performance and reliability.
+        String sql = "INSERT OR IGNORE INTO users(firstName,lastName,email,password,salt,accountType) VALUES (?,?,?,?,?,?)";
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            conn.setAutoCommit(false);
 
-            for (User user : userMap.values()) {
-                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                for (User user : userMap.values()) {
                     pstmt.setString(1, user.getFirstName());
                     pstmt.setString(2, user.getLastName());
                     pstmt.setString(3, user.getEmail());
                     pstmt.setString(4, user.getPassword());
                     pstmt.setString(5, user.getSalt());
                     pstmt.setString(6, user.getAccountType().name());
-
-                    pstmt.executeUpdate();
+                    pstmt.addBatch();
                 }
+                pstmt.executeBatch();
             }
 
+            conn.commit();
+            System.out.println("Users saved to DB.");
         } catch (SQLException e) {
             System.err.println("Error saving users: " + e.getMessage());
         }
+    }
+
+    /**
+     * Convenience init method you can call once at application startup.
+     */
+    public static void init() {
+        createTableIfNotExist();
     }
 }
