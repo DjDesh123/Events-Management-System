@@ -59,4 +59,10 @@ public class User{
         return accountType;
     }
 
+
+    // SETTER
+
+    public void setPassword(String password) {
+        this.password =  password;
+    }
 }

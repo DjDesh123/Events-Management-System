@@ -13,7 +13,7 @@ public class UserController {
         userDatabase = new UserDatabase();
 
         // Load users from storage and populate database
-        Map<Integer, User> loadedUsers = UserDatabaseStorage.load(); // make sure load() returns Map<Integer, User>
+        Map<Integer, User> loadedUsers = UserDatabaseStorage.load();
         if (loadedUsers != null) {
             for (User u : loadedUsers.values()) {
                 userDatabase.add(u);
@@ -121,8 +121,20 @@ public class UserController {
         return loggedInUser;
     }
 
-    public boolean forgotPassword(String email) {
-        System.out.println("=== FORGOT PASSWORD ===");
+
+    public boolean forgotPassword(String email,String newPassword) {
+
+        //gets user account via email
+        User account = userDatabase.getByEmail(email);
+
+        if (account == null) {
+            System.out.println("Forgot password failed: User not found.");
+            return false;
+        }
+
+        // changes with set the user password to their new password
+        account.setPassword(newPassword);
+
         return true;
     }
 }

@@ -15,6 +15,7 @@ public class LogInUI extends JFrame {
     private UserController userController = new UserController();
 
     public LogInUI() {
+        //initalising widget
         setTitle("Eventify Login");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,7 +29,7 @@ public class LogInUI extends JFrame {
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // ----- TITLE BOX -----
+        // Tile box
         JPanel titleBox = new JPanel();
         titleBox.setPreferredSize(new Dimension(250, 60));
         titleBox.setBackground(Color.WHITE);
@@ -42,7 +43,7 @@ public class LogInUI extends JFrame {
         gbc.gridy = 0;
         main.add(titleBox, gbc);
 
-        // ----- ENTRY FIELD MAKER -----
+        // entry box creator and logic
         JTextField emailField = createInputField("Email");
         JPasswordField passwordField = createPasswordField("Password");
 
@@ -52,7 +53,7 @@ public class LogInUI extends JFrame {
         gbc.gridy++;
         main.add(passwordField, gbc);
 
-        // ----- FORGOT PASSWORD HYPERLINK -----
+        //forgot password hyperlink and logic
         JLabel forgot = createHyperlink("forgot password?");
         gbc.gridy++;
         main.add(forgot, gbc);
@@ -61,10 +62,11 @@ public class LogInUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println("Forgot Password clicked.");
+                // NEEDS TO BECOMNE A SEPERATE WIDGET
             }
         });
 
-        // ----- SIGN IN BUTTON -----
+        // sign in button and logic
         JButton signIn = new JButton("Enter");
         signIn.setPreferredSize(new Dimension(90, 30));
         signIn.setBackground(new Color(50, 50, 50));
@@ -94,7 +96,7 @@ public class LogInUI extends JFrame {
             }
         });
 
-        // ----- SIGN UP HYPERLINK -----
+        //signup hyperlink and logic
         JLabel signUp = createHyperlink("Sign up");
         gbc.gridy++;
         main.add(signUp, gbc);
