@@ -9,6 +9,7 @@ public class User{
     private String password;
     private String salt;
 
+
     // to improve security and be more efficient than just a string
     public enum accountType{
         STUDENT,
@@ -65,4 +66,6 @@ public class User{
     public void setPassword(String password) {
         this.password =  password;
     }
+
+    public void setSalt(String salt) {this.salt = salt;}
 }

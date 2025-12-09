@@ -5,39 +5,52 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserDatabase {
-    private Map<Integer,User> userMap = new HashMap<>();
-    private AtomicInteger idCounter = new AtomicInteger(0);
+    private final Map<Integer, User> userMap = new HashMap<>();
+    private final AtomicInteger idCounter = new AtomicInteger(0);
 
+    public UserDatabase() {
+        // Load existing users from DB
+        Map<Integer, User> loadedUsers = UserDatabaseStorage.load();
+        if (loadedUsers != null) {
+            userMap.putAll(loadedUsers);
 
+            // Update counter to highest userId to avoid overwriting
+            int maxId = loadedUsers.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+            idCounter.set(maxId);
+        }
+    }
 
+    // Generate new unique ID
     public int generateNewId() {
         return idCounter.incrementAndGet();
     }
 
-    //adds the users to the local database
-    public void add(User user){
+    // Add or update user
+    public void add(User user) {
         if (user.getUserId() > idCounter.get()) {
             idCounter.set(user.getUserId());
         }
-        userMap.put(user.getUserId(),user);
+        userMap.put(user.getUserId(), user);
+        UserDatabaseStorage.save(userMap); // persist immediately
     }
 
-    // gets the certain users infomation
-    public User get(int userid){
-        return userMap.get(userid);
+    // Get user by ID
+    public User get(int userId) {
+        return userMap.get(userId);
     }
 
-    // deletes the user from the local database
-    public void delete(int userId){
+    // Delete user
+    public void delete(int userId) {
         userMap.remove(userId);
+        UserDatabaseStorage.save(userMap);
     }
 
-    // gets all the users
-    public Map<Integer,User> getUsers(){
+    // Get all users
+    public Map<Integer, User> getUsers() {
         return userMap;
     }
 
-    // helper class
+    // Get user by email
     public User getByEmail(String email) {
         for (User user : userMap.values()) {
             if (user.getEmail().equalsIgnoreCase(email)) {
@@ -47,4 +60,9 @@ public class UserDatabase {
         return null;
     }
 
+    // Convenience method to persist all users manually
+    public void saveAll() {
+        UserDatabaseStorage.save(userMap);
+    }
 }
+

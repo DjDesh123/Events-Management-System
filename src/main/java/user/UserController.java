@@ -122,19 +122,32 @@ public class UserController {
     }
 
 
-    public boolean forgotPassword(String email,String newPassword) {
-
-        //gets user account via email
+    public boolean forgotPassword(String email, String newPassword) {
+        // Get user from database
         User account = userDatabase.getByEmail(email);
-
         if (account == null) {
             System.out.println("Forgot password failed: User not found.");
             return false;
         }
 
-        // changes with set the user password to their new password
-        account.setPassword(newPassword);
+        // Generate new salt + hash
+        PasswordHashing ph = new PasswordHashing();
+        String newSalt = ph.getSalt();
+        String hashedPassword = ph.hashingPassword(newPassword, newSalt);
 
+        // Update user object
+        account.setPassword(hashedPassword);
+        account.setSalt(newSalt);
+
+        // Update database storage
+        UserDatabaseStorage.save(userDatabase.getUsers());
+
+        System.out.println("Password updated for user: " + email);
         return true;
     }
+    // In UserController
+    public User getUserByEmail(String email) {
+        return userDatabase.getByEmail(email);
+    }
+
 }

@@ -1,24 +1,28 @@
 package notifications;
 
-import user.UserController;
+import events.Event;
 import java.util.List;
-
 
 public class NotificationController {
 
-    private NotificationDatabase notificationDatabase= new NotificationDatabase();
+    private final NotificationDatabase notificationDatabase = new NotificationDatabase();
 
-    public List<Notifications> getNotification(){
-        int userId= UserController.getLoggedInUser().getUserId();
+    public List<Notifications> getNotificationsForUser(int userId){
         return notificationDatabase.getNotificationsForUser(userId);
-
     }
 
     public void deleteNotification(int notId){
         notificationDatabase.delete(notId);
     }
 
-    public Notifications createNotification(int userId, int eventId, int creatorId, String message) {
+    public Notifications createNotification(int userId, int eventId, int creatorId, String message){
         return notificationDatabase.add(userId, eventId, creatorId, message);
+    }
+
+    // Send notifications to all attendees of an event
+    public void notifyAttendees(Event event, String message) {
+        for (user.User u : event.getAttendee()) {
+            createNotification(u.getUserId(), event.getEventId(), event.getCreatorId(), message);
+        }
     }
 }

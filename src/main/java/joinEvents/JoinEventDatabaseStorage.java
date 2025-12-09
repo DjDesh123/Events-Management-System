@@ -9,7 +9,6 @@ public class JoinEventDatabaseStorage {
     private static final String DB_URL = "jdbc:sqlite:JoinEventDatabase.sqlite";
 
     public static void createTableIfNotExist() {
-
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
 
@@ -26,8 +25,8 @@ public class JoinEventDatabaseStorage {
         }
     }
 
+    // Load join records into memory
     public static Map<Integer, JoinEvent> load() {
-
         Map<Integer, JoinEvent> joinMap = new HashMap<>();
 
         try (Connection conn = DriverManager.getConnection(DB_URL);
@@ -35,7 +34,6 @@ public class JoinEventDatabaseStorage {
              ResultSet rs = stmt.executeQuery("SELECT * FROM joinEvents")) {
 
             while (rs.next()) {
-
                 JoinEvent je = new JoinEvent(
                         rs.getInt("joinId"),
                         rs.getInt("userId"),
@@ -48,20 +46,17 @@ public class JoinEventDatabaseStorage {
         } catch (SQLException e) {
             System.err.println("JoinEvent load error: " + e.getMessage());
         }
-
         return joinMap;
     }
 
-
+    // Save all join records to DB
     public static void save(Map<Integer, JoinEvent> joinMap) {
-
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
 
             conn.setAutoCommit(false);
 
             stmt.execute("DELETE FROM joinEvents");
-
             String sql = "INSERT INTO joinEvents VALUES(?,?,?)";
 
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -70,10 +65,8 @@ public class JoinEventDatabaseStorage {
                     pstmt.setInt(1, je.getJoinId());
                     pstmt.setInt(2, je.getUserId());
                     pstmt.setInt(3, je.getEventId());
-
                     pstmt.addBatch();
                 }
-
                 pstmt.executeBatch();
             }
 

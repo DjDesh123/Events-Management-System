@@ -5,53 +5,60 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class EventDatabase {
-    private Map<Integer,Event> eventMap = new HashMap();
+    private Map<Integer, Event> eventMap;
     private AtomicInteger idCounter = new AtomicInteger(0);
+
+    public EventDatabase() {
+        // Load from storage
+        eventMap = EventDatabaseStorage.load();
+
+        // Update idCounter to the highest existing ID
+        eventMap.keySet().stream().max(Integer::compareTo).ifPresent(idCounter::set);
+    }
 
     public int generateNewId() {
         return idCounter.incrementAndGet();
     }
 
-    //adds the users to the local database
-    public void save (Event event){
+    // Add or update event
+    public void save(Event event) {
         if (event.getEventId() > idCounter.get()) {
             idCounter.set(event.getEventId());
         }
-        eventMap.put(event.getEventId(),event);
+        eventMap.put(event.getEventId(), event);
+        EventDatabaseStorage.save(eventMap);
     }
 
-
-    //adds the event to the local database
-    public void add(Event event){
-        eventMap.put(event.getEventId(),event);
+    // Add new event without saving immediately
+    public void add(Event event) {
+        eventMap.put(event.getEventId(), event);
     }
 
-    // gets the certain event infomation
-    public Event get(int eventId){
+    // Get a single event
+    public Event get(int eventId) {
         return eventMap.get(eventId);
     }
 
-    // deletes the event from the local database
-    public void delete(int EventId){
-        eventMap.remove(EventId);
+    // Delete an event
+    public void delete(int eventId) {
+        eventMap.remove(eventId);
+        EventDatabaseStorage.save(eventMap);
     }
 
-    // gets all the event
-    public Map<Integer,Event> getEvents(){
-        return eventMap;
+    // ✅ Return all events
+    public Map<Integer, Event> getAllEvents() {
+        return new HashMap<>(eventMap);
     }
 
-    // check duplicate names
-    public boolean existsByName(String name){
+    // Check duplicate names
+    public boolean existsByName(String name) {
         return eventMap.values().stream().anyMatch(e -> e.getEventTitle().equalsIgnoreCase(name));
     }
 
-    // get upcoming events
+    // Get upcoming events
     public Map<Integer, Event> getUpcoming() {
         Map<Integer, Event> upcoming = new HashMap<>();
-
         for (Event e : eventMap.values()) {
             if (e.getEndDate().isAfter(LocalDate.now())) {
                 upcoming.put(e.getEventId(), e);
@@ -60,5 +67,3 @@ public class EventDatabase {
         return upcoming;
     }
 }
-
-

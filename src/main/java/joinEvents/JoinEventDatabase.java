@@ -1,42 +1,53 @@
 package joinEvents;
 
-import events.Event;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class JoinEventDatabase {
-    private Map<Integer, JoinEvent> joinEventMap = new HashMap<>();
-    private AtomicInteger idCounter = new AtomicInteger(0);
 
-    public int generateNewId() {
-        return idCounter.incrementAndGet();
+    private Map<Integer, JoinEvent> joinEvents = new HashMap<>();
+    private int nextId = 1;
+
+    /* ====================== LOAD / SAVE SUPPORT ======================= */
+
+    public Map<Integer, JoinEvent> getJoinEvents() {
+        return joinEvents;
     }
 
-    //adds the users to the local database
-    public void save (JoinEvent joinEvent){
-        if (joinEvent.getJoinId() > idCounter.get()) {
-            idCounter.set(joinEvent.getJoinId());
+    // FIX — controller calls this at startup
+    public void setJoinEvents(Map<Integer, JoinEvent> events) {
+        if (events != null) {
+            this.joinEvents = events;
+            // next id continues from last saved one
+            this.nextId = events.keySet().stream().max(Integer::compare).orElse(0) + 1;
         }
-        joinEventMap.put(joinEvent.getJoinId(),joinEvent);
     }
 
-    public void add(JoinEvent joinEvent){
+    /* ======================= ID GENERATION ============================ */
 
-        joinEventMap.put(joinEvent.getJoinId(), joinEvent);
+    // FIX — controller uses this
+    public int generateNewId() {
+        return nextId++;
     }
 
-    public JoinEvent get(int joinId){
-        return joinEventMap.get(joinId);
+    /* ====================== CRUD OPERATIONS ============================ */
+
+    // FIX — controller calls add(join)
+    public void add(JoinEvent joinEvent) {
+        joinEvents.put(joinEvent.getJoinId(), joinEvent);
     }
 
-    public void delete(int joinId){
-        joinEventMap.remove(joinId);
+    public JoinEvent get(int id) {
+        return joinEvents.get(id);
     }
 
-    public Map<Integer, JoinEvent> getJoinEvents(){
-        return joinEventMap;
+    // Update if needed later
+    public void update(int id, JoinEvent event) {
+        if (joinEvents.containsKey(id)) joinEvents.put(id, event);
+    }
+
+    // FIX — controller calls delete(int)
+    public void delete(int id) {
+        joinEvents.remove(id);
     }
 }
-
