@@ -1,49 +1,59 @@
 package notifications;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+/**
+ * In-memory notification store. Simple API to add/get/delete.
+ * It is initialised with previously-loaded values from storage.
+ */
 public class NotificationDatabase {
-        private Map<Integer, Notifications> notificationsMap = new HashMap<>();
-        private AtomicInteger counterId = new AtomicInteger(0);
 
+    private final Map<Integer, Notifications> notificationsMap;
+    private final AtomicInteger counterId;
 
-        public int generateNewId() {
-            return counterId.getAndIncrement();
-        }
+    // Accept an initial map (from storage) or empty map
+    public NotificationDatabase(Map<Integer, Notifications> initial) {
+        if (initial == null) initial = new HashMap<>();
+        this.notificationsMap = new HashMap<>(initial);
 
-        public void save(Notifications notification) {
-            int notId = notification.getNotId();
-            if (notId > counterId.get()) {
-                counterId.set(notId);
-            }
-            notificationsMap.put(notId, notification);
-        }
+        // set counter to max existing id + 1
+        int max = notificationsMap.keySet().stream().mapToInt(i -> i).max().orElse(-1);
+        this.counterId = new AtomicInteger(max + 1);
+    }
 
-        public Notifications add(int userId, int eventId, int creatorId, String message) {
-            int id = generateNewId();
-            Notifications notifications = new Notifications(id,userId,eventId,creatorId,message);
-            notificationsMap.put(id, notifications);
-            return notifications;
-        }
+    private int generateNewId() {
+        return counterId.getAndIncrement();
+    }
 
-        public Notifications get(int notId){
-            return notificationsMap.get(notId);
-        }
+    public void save(Notifications notification) {
+        notificationsMap.put(notification.getNotId(), notification);
+    }
 
-        public void delete(int notId){
-            notificationsMap.remove(notId);
-        }
+    public Notifications add(int userId, int eventId, int creatorId, String message) {
+        int id = generateNewId();
+        Notifications n = new Notifications(id, userId, eventId, creatorId, message);
+        notificationsMap.put(id, n);
+        return n;
+    }
 
-        public Map<Integer, Notifications> getNotifications() {
-            return notificationsMap;
-        }
+    public Notifications get(int notId) {
+        return notificationsMap.get(notId);
+    }
 
-    public java.util.List<Notifications> getNotificationsForUser(int userId) {
+    public void delete(int notId) {
+        notificationsMap.remove(notId);
+    }
+
+    public Map<Integer, Notifications> getNotificationsMap() {
+        return Collections.unmodifiableMap(notificationsMap);
+    }
+
+    public List<Notifications> getNotificationsForUser(int userId) {
         return notificationsMap.values().stream()
                 .filter(n -> n.getUserId() == userId)
+                .sorted(Comparator.comparingInt(Notifications::getNotId)) // optional order
                 .collect(Collectors.toList());
     }
 }

@@ -1,3 +1,4 @@
+
 package ui;
 
 import events.EventController;
@@ -5,6 +6,7 @@ import events.EventDatabase;
 import joinEvents.JoinEventDatabase;
 import notifications.NotificationController;
 import user.User;
+import user.UserController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,15 +22,17 @@ public class CreateEventUI extends JFrame {
     private final EventDatabase eventDatabase;
     private final JoinEventDatabase joinEventDatabase;
     private final NotificationController notificationController;
+    private final UserController userController;
 
     public CreateEventUI(User currentUser, EventDatabase eventDatabase,
                          JoinEventDatabase joinEventDatabase, EventController eventController,
-                         NotificationController notificationController) {
+                         NotificationController notificationController, UserController userController) {
         this.currentUser = currentUser;
         this.eventDatabase = eventDatabase;
         this.eventController = eventController;
         this.joinEventDatabase = joinEventDatabase;
         this.notificationController = notificationController;
+        this.userController = userController;
 
         setTitle("Create Event");
         setSize(1200, 700);
@@ -50,13 +54,13 @@ public class CreateEventUI extends JFrame {
 
         JButton homeBtn = sideButton("Home");
         homeBtn.addActionListener(e -> {
-            new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController);
+            new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController, userController);
             dispose();
         });
 
         JButton searchBtn = sideButton("Search");
         searchBtn.addActionListener(e -> {
-            new SearchUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController);
+            new SearchUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController,userController);
             dispose();
         });
 
@@ -148,7 +152,7 @@ public class CreateEventUI extends JFrame {
 
             if (error == null) {
                 JOptionPane.showMessageDialog(this, "Event Created Successfully!");
-                new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController);
+                new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController,userController);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, error, "Input Error", JOptionPane.ERROR_MESSAGE);

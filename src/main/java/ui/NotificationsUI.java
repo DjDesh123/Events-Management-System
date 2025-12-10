@@ -1,20 +1,19 @@
 package ui;
-
 import notifications.NotificationController;
 import notifications.Notifications;
 import user.User;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class NotificationsUI extends JFrame {
 
-    private final NotificationController controller = new NotificationController();
+    private final NotificationController controller;
     private final User user;
 
-    public NotificationsUI(User user) {
+    public NotificationsUI(User user, NotificationController controller) {
         this.user = user;
+        this.controller = controller;
 
         setTitle("Notifications");
         setSize(500,500);
@@ -27,11 +26,10 @@ public class NotificationsUI extends JFrame {
     }
 
     private void loadNotifications() {
-        // Correctly use getUserId() to fetch notifications
         List<Notifications> list = controller.getNotificationsForUser(user.getUserId());
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         if(list.isEmpty()){
             JLabel none = new JLabel("No notifications");
@@ -48,7 +46,7 @@ public class NotificationsUI extends JFrame {
                 del.addActionListener(e -> {
                     controller.deleteNotification(n.getNotId());
                     dispose();
-                    new NotificationsUI(user);
+                    new NotificationsUI(user, controller); // reuse same controller
                 });
 
                 box.add(del,BorderLayout.EAST);

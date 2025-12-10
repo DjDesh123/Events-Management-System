@@ -83,10 +83,10 @@ public class LogInUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Login Successful!");
 
                 if (user.getAccountType() == User.accountType.STUDENT) {
-                    new StudentDashboardUI(user, eventDatabase, joinEventDatabase,eventController,notificationController);
+                    new StudentDashboardUI(user, eventDatabase, joinEventDatabase,eventController,notificationController,userController);
                 } else if (user.getAccountType() == User.accountType.ORGANISER) {
                     EventController controller = new EventController();
-                    new OrganiserDashboardUI(user, eventDatabase, joinEventDatabase,eventController,notificationController);
+                    new OrganiserDashboardUI(user, eventDatabase, joinEventDatabase,eventController,notificationController,userController);
                 }
 
                 dispose();

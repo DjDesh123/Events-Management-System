@@ -6,6 +6,7 @@ import events.EventDatabase;
 import joinEvents.JoinEventDatabase;
 import notifications.NotificationController;
 import user.User;
+import user.UserController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +21,7 @@ public class OrganiserDashboardUI extends JFrame {
     private final EventController eventController;
     private final JoinEventDatabase joinEventDatabase;
     private final NotificationController notificationController;
+    private final UserController userController;
 
     private List<Event> organisedEvents;
     private int eventIndex = 0;
@@ -28,12 +30,13 @@ public class OrganiserDashboardUI extends JFrame {
                                 EventDatabase eventDatabase,
                                 JoinEventDatabase joinEventDatabase,
                                 EventController eventController,
-                                NotificationController notificationController) {
+                                NotificationController notificationController, UserController userController) {
         this.currentUser = currentUser;
         this.eventDatabase = eventDatabase;
         this.eventController = eventController;
         this.joinEventDatabase = joinEventDatabase;
         this.notificationController = notificationController;
+        this.userController = userController;
 
         loadEvents();
 
@@ -67,7 +70,7 @@ public class OrganiserDashboardUI extends JFrame {
 
         JButton searchBtn = sideButton("Search");
         searchBtn.addActionListener(e -> {
-            new SearchUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController);
+            new SearchUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController, userController);
             dispose();
         });
 
@@ -77,11 +80,12 @@ public class OrganiserDashboardUI extends JFrame {
                 eventDatabase,
                 joinEventDatabase,
                 eventController,
-                notificationController
+                notificationController,
+                userController
         ));
 
         JButton settingsBtn = sideButton("Settings");
-        settingsBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "Settings coming soon!"));
+        settingsBtn.addActionListener(e -> new SettingsUI(this,userController)); // <--- CONNECTED TO YOUR SETTINGS UI
 
         side.add(homeBtn);
         side.add(searchBtn);

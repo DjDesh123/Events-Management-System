@@ -104,14 +104,15 @@ public class ViewDetailsUI extends JFrame {
                            JTextField capacityField, JTextField descriptionField) {
         try {
             LocalDate startDate = LocalDate.of(
-                    Integer.parseInt(((JTextField)startDatePanel.getComponent(0)).getText()),
-                    Integer.parseInt(((JTextField)startDatePanel.getComponent(1)).getText()),
-                    Integer.parseInt(((JTextField)startDatePanel.getComponent(2)).getText())
+                    Integer.parseInt(((JTextField)startDatePanel.getComponent(2)).getText()), // YEAR
+                    Integer.parseInt(((JTextField)startDatePanel.getComponent(1)).getText()), // MONTH
+                    Integer.parseInt(((JTextField)startDatePanel.getComponent(0)).getText())  // DAY
             );
+
             LocalDate endDate = LocalDate.of(
-                    Integer.parseInt(((JTextField)endDatePanel.getComponent(0)).getText()),
+                    Integer.parseInt(((JTextField)endDatePanel.getComponent(2)).getText()),
                     Integer.parseInt(((JTextField)endDatePanel.getComponent(1)).getText()),
-                    Integer.parseInt(((JTextField)endDatePanel.getComponent(2)).getText())
+                    Integer.parseInt(((JTextField)endDatePanel.getComponent(0)).getText())
             );
 
             LocalTime startTime = LocalTime.of(

@@ -6,6 +6,7 @@ import events.EventDatabase;
 import joinEvents.JoinEventDatabase;
 import notifications.NotificationController;
 import user.User;
+import user.UserController;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,6 +22,7 @@ public class SearchUI extends JFrame {
     private final JoinEventDatabase joinEventDatabase;
     private final EventController eventController;
     private final NotificationController notificationController;
+    private final UserController userController;
 
     private JPanel eventsPanel;
     private JTextField searchField;
@@ -30,12 +32,14 @@ public class SearchUI extends JFrame {
                     EventDatabase eventDatabase,
                     JoinEventDatabase joinEventDatabase,
                     EventController eventController,
-                    NotificationController notificationController) {
+                    NotificationController notificationController, UserController userController) {
+
         this.currentUser = currentUser;
         this.eventDatabase = eventDatabase;
         this.joinEventDatabase = joinEventDatabase;
         this.eventController = eventController;
         this.notificationController = notificationController;
+        this.userController = userController;
 
         setTitle("Search Events");
         setSize(1050, 650);
@@ -94,19 +98,21 @@ public class SearchUI extends JFrame {
 
         JButton homeBtn = sideButton("Home");
         homeBtn.addActionListener(e -> {
-            if (currentUser.getAccountType() == User.accountType.STUDENT) {
-                new StudentDashboardUI(currentUser, eventDatabase, joinEventDatabase,eventController,notificationController);
-            } else {
-                new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController);
-            }
+            if (currentUser.getAccountType() == User.accountType.STUDENT)
+                new StudentDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController,userController);
+            else
+                new OrganiserDashboardUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController,userController);
             dispose();
         });
 
         JButton searchBtn = sideButton("Search");
         searchBtn.setEnabled(false);
 
+        // --- SETTINGS NOW WORKS ---
         JButton settingsBtn = sideButton("Settings");
-        settingsBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "Settings coming soon!"));
+        settingsBtn.addActionListener(e ->
+                new SettingsUI(this,userController)   // ← opens settings immediately
+        );
 
         side.add(homeBtn);
         side.add(searchBtn);
@@ -115,7 +121,7 @@ public class SearchUI extends JFrame {
         if (currentUser.getAccountType() == User.accountType.ORGANISER) {
             JButton createBtn = sideButton("Create Event");
             createBtn.addActionListener(e ->
-                    new CreateEventUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController));
+                    new CreateEventUI(currentUser, eventDatabase, joinEventDatabase, eventController, notificationController,userController));
             side.add(createBtn);
         }
 
