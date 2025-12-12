@@ -34,6 +34,7 @@ public class JoinEventDatabaseStorage {
              ResultSet rs = stmt.executeQuery("SELECT * FROM joinEvents")) {
 
             while (rs.next()) {
+                //build joinEvent object from DB row
                 JoinEvent je = new JoinEvent(
                         rs.getInt("joinId"),
                         rs.getInt("userId"),
@@ -61,6 +62,7 @@ public class JoinEventDatabaseStorage {
 
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+                // Insert each join-event record
                 for (JoinEvent je : joinMap.values()) {
                     pstmt.setInt(1, je.getJoinId());
                     pstmt.setInt(2, je.getUserId());

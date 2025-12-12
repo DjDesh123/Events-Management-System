@@ -37,7 +37,7 @@ public class SignUpUI extends JFrame {
         panel.add(title);
         panel.add(Box.createVerticalStrut(20));
 
-        // Account type toggles
+        // account type toggles
         JPanel togglePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         studentToggle = new JToggleButton("Student");
         organizerToggle = new JToggleButton("Organizer");
@@ -50,7 +50,7 @@ public class SignUpUI extends JFrame {
         panel.add(togglePanel);
         panel.add(Box.createVerticalStrut(15));
 
-        // Input fields
+        // input fields
         firstNameField = createInputField("First Name");
         lastNameField = createInputField("Last Name");
         emailField = createInputField("Email");
@@ -93,7 +93,7 @@ public class SignUpUI extends JFrame {
 
         buttonLinkPanel.add(loginLink);
 
-        panel.add(buttonLinkPanel); // add the button+link panel to main panel
+        panel.add(buttonLinkPanel);
 
         add(panel, BorderLayout.CENTER);
         setVisible(true);
@@ -118,7 +118,7 @@ public class SignUpUI extends JFrame {
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Account created!");
-            new LogInUI(userController); // redirect to login
+            new LogInUI(userController);
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Please fill all fields correctly.");

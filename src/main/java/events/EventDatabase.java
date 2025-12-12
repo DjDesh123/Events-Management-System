@@ -17,6 +17,7 @@ public class EventDatabase {
         eventMap.keySet().stream().max(Integer::compareTo).ifPresent(idCounter::set);
     }
 
+    //generate a new unique event ID
     public int generateNewId() {
         return idCounter.incrementAndGet();
     }
@@ -46,7 +47,7 @@ public class EventDatabase {
         EventDatabaseStorage.save(eventMap);
     }
 
-    // ✅ Return all events
+    // Returns all events
     public Map<Integer, Event> getAllEvents() {
         return new HashMap<>(eventMap);
     }
@@ -54,16 +55,5 @@ public class EventDatabase {
     // Check duplicate names
     public boolean existsByName(String name) {
         return eventMap.values().stream().anyMatch(e -> e.getEventTitle().equalsIgnoreCase(name));
-    }
-
-    // Get upcoming events
-    public Map<Integer, Event> getUpcoming() {
-        Map<Integer, Event> upcoming = new HashMap<>();
-        for (Event e : eventMap.values()) {
-            if (e.getEndDate().isAfter(LocalDate.now())) {
-                upcoming.put(e.getEventId(), e);
-            }
-        }
-        return upcoming;
     }
 }

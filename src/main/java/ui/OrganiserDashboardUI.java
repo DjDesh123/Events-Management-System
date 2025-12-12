@@ -23,14 +23,18 @@ public class OrganiserDashboardUI extends JFrame {
     private final NotificationController notificationController;
     private final UserController userController;
 
+    // list of events organised by this user
     private List<Event> organisedEvents;
+    // current index for pagination
     private int eventIndex = 0;
 
+    // constructor
     public OrganiserDashboardUI(User currentUser,
                                 EventDatabase eventDatabase,
                                 JoinEventDatabase joinEventDatabase,
                                 EventController eventController,
-                                NotificationController notificationController, UserController userController) {
+                                NotificationController notificationController,
+                                UserController userController) {
         this.currentUser = currentUser;
         this.eventDatabase = eventDatabase;
         this.eventController = eventController;
@@ -52,13 +56,14 @@ public class OrganiserDashboardUI extends JFrame {
         setVisible(true);
     }
 
+    // load organised events from controller
     private void loadEvents() {
         organisedEvents = eventController.getUsersEvents(currentUser).stream()
                 .filter(e -> !e.getEndDate().isBefore(LocalDate.now()))
                 .collect(Collectors.toList());
     }
 
-    // ===== Sidebar =====
+    // create sidebar panel with navigation buttons
     private JPanel sidebar() {
         JPanel side = new JPanel();
         side.setPreferredSize(new Dimension(180, getHeight()));
@@ -85,7 +90,7 @@ public class OrganiserDashboardUI extends JFrame {
         ));
 
         JButton settingsBtn = sideButton("Settings");
-        settingsBtn.addActionListener(e -> new SettingsUI(this,userController)); // <--- CONNECTED TO YOUR SETTINGS UI
+        settingsBtn.addActionListener(e -> new SettingsUI(this,userController));
 
         side.add(homeBtn);
         side.add(searchBtn);
@@ -96,6 +101,7 @@ public class OrganiserDashboardUI extends JFrame {
         return side;
     }
 
+    // helper to create a sidebar button
     private JButton sideButton(String text) {
         JButton btn = new JButton(text);
         btn.setMaximumSize(new Dimension(180, 40));
@@ -105,14 +111,14 @@ public class OrganiserDashboardUI extends JFrame {
         return btn;
     }
 
-    // ===== Main Content =====
+    // create main content panel displaying organised events
     private JPanel mainContent() {
         JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
         main.setBackground(Color.WHITE);
 
         if (organisedEvents.isEmpty()) {
-            JLabel noEvents = new JLabel("No events found", SwingConstants.CENTER);
+            JLabel noEvents = new JLabel("no events found", SwingConstants.CENTER);
             noEvents.setFont(new Font("Arial", Font.ITALIC, 16));
             main.add(noEvents, BorderLayout.CENTER);
         } else {
@@ -149,6 +155,7 @@ public class OrganiserDashboardUI extends JFrame {
         return main;
     }
 
+    // create individual event card with click listener
     private JPanel eventCard(Event e) {
         JPanel card = new JPanel(new BorderLayout());
         card.setPreferredSize(new Dimension(200, 140));
@@ -177,6 +184,7 @@ public class OrganiserDashboardUI extends JFrame {
         return card;
     }
 
+    // refresh entire ui
     private void refreshUI() {
         getContentPane().removeAll();
         add(sidebar(), BorderLayout.WEST);

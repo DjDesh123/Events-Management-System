@@ -16,15 +16,12 @@ public class EventController {
         EventDatabaseStorage.load(); // Load existing events
     }
 
-    /**
-     * Create a new event with detailed validation.
-     * Returns an error message if validation fails, null if creation succeeds.
-     */
+
     public String createEvent(User creator, String eventTitle, String location, LocalDate startDate, LocalDate endDate,
                               LocalTime startTime, LocalTime endTime, int maxAttendees,
                               List<User> initialAttendees, String description) {
 
-        // --- REQUIRED FIELDS ---
+        // basic required field checks
         if (eventTitle == null || eventTitle.isBlank()) return "Event title is required!";
         if (location == null || location.isBlank()) return "Location is required!";
         if (description == null || description.isBlank()) return "Description is required!";
@@ -34,40 +31,42 @@ public class EventController {
         if (endTime == null) return "End time is required!";
         if (maxAttendees <= 0) return "Capacity must be greater than 0!";
 
-        // --- DATE & TIME VALIDATION ---
+        // ensures dates and time are valid
         if (!isValidDate(startDate)) return "Start date is invalid!";
         if (!isValidDate(endDate)) return "End date is invalid!";
         if (startDate.isAfter(endDate)) return "Start date cannot be after end date!";
         if (startTime.isAfter(endTime)) return "Start time cannot be after end time!";
 
-        // --- INITIAL ATTENDEES ---
+        // validates attendee
         if (initialAttendees == null) initialAttendees = List.of();
         if (initialAttendees.size() > maxAttendees) return "Initial attendees exceed capacity!";
         long unique = initialAttendees.stream().distinct().count();
         if (unique != initialAttendees.size()) return "Duplicate users in initial attendees list!";
 
-        // --- DUPLICATE EVENT TITLE ---
+        // dupe event title
         if (eventDatabase.existsByName(eventTitle)) return "Event title already exists!";
 
-        // --- CREATE EVENT ---
+        // create event object
         int eventId = eventDatabase.generateNewId();
         int creatorId = creator.getUserId();
 
         Event event = new Event(eventId, creatorId, eventTitle, location,
                 startDate, endDate, startTime, endTime, maxAttendees, initialAttendees, description);
 
+        // stores the event locally and externally
         eventDatabase.add(event);
         EventDatabaseStorage.save(eventDatabase.getAllEvents());
-        return null; // null = success
+        return null;
     }
 
+    // ensures the data exists ont he calendar
     private boolean isValidDate(LocalDate date) {
         int day = date.getDayOfMonth();
         int month = date.getMonthValue();
         return month >= 1 && month <= 12 && day > 0 && day <= date.lengthOfMonth();
     }
 
-    // --- DELETE EVENT ---
+    // deletes the event by the id
     public boolean deleteEvent(int eventId) {
         Event event = eventDatabase.get(eventId);
         if (event == null) return false;
@@ -77,17 +76,19 @@ public class EventController {
         return true;
     }
 
-    // --- EDIT EVENT ---
+    // editing existing event details
     public boolean editEvent(int eventId, String eventTitle, String location, LocalDate startDate, LocalDate endDate,
                              LocalTime startTime, LocalTime endTime, int maxAttendees, String description) {
 
         Event event = eventDatabase.get(eventId);
         if (event == null) return false;
 
+        // validates basic rules
         if (eventTitle == null || eventTitle.isBlank()) return false;
         if (startDate.isAfter(endDate)) return false;
         if (maxAttendees < event.getAttendee().size()) return false;
 
+        //updates the fields
         event.setEventTitle(eventTitle);
         event.setLocation(location);
         event.setStartDate(startDate);
@@ -101,7 +102,7 @@ public class EventController {
         return true;
     }
 
-    // --- GET UPCOMING EVENTS ---
+    // gets the upcoming events
     public List<Event> getUpcomingEvents() {
         LocalDate today = LocalDate.now();
 
@@ -114,7 +115,7 @@ public class EventController {
                 .collect(Collectors.toList());
     }
 
-    // --- GET EVENTS CREATED BY SPECIFIC USER ---
+    // get events created bt a specific user
     public List<Event> getUsersEvents(User user) {
         int userId = user.getUserId();
         return eventDatabase.getAllEvents().values().stream()
@@ -122,7 +123,7 @@ public class EventController {
                 .collect(Collectors.toList());
     }
 
-    // --- FILTER EVENTS ---
+    // apply filters
     public List<Event> getFilteredEvents(Filter filter) {
         return eventDatabase.getAllEvents().values().stream()
                 .filter(event -> filter.location == null || event.getLocation().equalsIgnoreCase(filter.location))
@@ -133,9 +134,5 @@ public class EventController {
                 .filter(event -> filter.startTime == null || !event.getStartTime().isBefore(filter.startTime))
                 .filter(event -> filter.endTime == null || !event.getEndTime().isAfter(filter.endTime))
                 .collect(Collectors.toList());
-    }
-
-    public List<Event> getEventInfo() {
-        return eventDatabase.getAllEvents().values().stream().collect(Collectors.toList());
     }
 }

@@ -42,7 +42,7 @@ public class LogInUI extends JFrame {
         panel.add(title);
         panel.add(Box.createVerticalStrut(20));
 
-        // Input fields
+        //input fields
         JTextField emailField = new JTextField();
         emailField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         emailField.setBorder(BorderFactory.createTitledBorder("Email"));

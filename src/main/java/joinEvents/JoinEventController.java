@@ -14,7 +14,7 @@ public class JoinEventController {
     private final EventDatabase eventDatabase;
     private final JoinEventDatabase joinEventDatabase;
 
-    // Load everything properly at startup
+    // controller
     public JoinEventController(EventDatabase eventDatabase, JoinEventDatabase joinEventDatabase) {
         this.eventDatabase = eventDatabase;
         this.joinEventDatabase = joinEventDatabase;
@@ -24,19 +24,12 @@ public class JoinEventController {
         joinEventDatabase.setJoinEvents(JoinEventDatabaseStorage.load());
     }
 
-    // Returns all events a user has joined by lookup
-    public List<Event> getJoinedEvents(int userId) {
-        return joinEventDatabase.getJoinEvents().values().stream()
-                .filter(join -> join.getUserId() == userId)
-                .map(join -> eventDatabase.get(join.getEventId()))
-                .collect(Collectors.toList());
-    }
-
-    // + Join event
+    // allows the logged-in user to join an event
     public boolean joinEvent(int eventId) {
         User user = UserController.getLoggedInUser();
         if (user == null) return false;
 
+        // finds an event
         Event event = eventDatabase.get(eventId);
         if (event == null) return false;
 
@@ -55,7 +48,7 @@ public class JoinEventController {
 
         if (current >= event.getMaxAttendees()) return false;
 
-        // Create join record (+)
+        // Create join record
         int joinId = joinEventDatabase.generateNewId();
         JoinEvent join = new JoinEvent(joinId, user.getUserId(), eventId);
 
@@ -65,7 +58,7 @@ public class JoinEventController {
         return true;
     }
 
-    // - Leave event
+    // Leave event
     public boolean leaveEvent(int eventId) {
         User user = UserController.getLoggedInUser();
         if (user == null) return false;

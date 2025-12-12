@@ -53,7 +53,7 @@ public class ViewEventDetailsUI extends JFrame {
 
         joinBtn.addActionListener(e -> {
             if (joinController.joinEvent(event.getEventId())) {
-                JOptionPane.showMessageDialog(this, "Joined ✔");
+                JOptionPane.showMessageDialog(this, "Joined");
                 joinBtn.setEnabled(false);
                 leaveBtn.setEnabled(true);
             }
@@ -61,7 +61,7 @@ public class ViewEventDetailsUI extends JFrame {
 
         leaveBtn.addActionListener(e -> {
             if (joinController.leaveEvent(event.getEventId())) {
-                JOptionPane.showMessageDialog(this, "Left Event ❌");
+                JOptionPane.showMessageDialog(this, "Left Event");
                 joinBtn.setEnabled(true);
                 leaveBtn.setEnabled(false);
             }

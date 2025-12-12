@@ -7,7 +7,7 @@ public class NotificationsDatabaseStorage {
 
     private static final String DB_URL = "jdbc:sqlite:NotificationsDatabase.sqlite";
 
-    /** Ensures the notifications table exists */
+    //create table if its missing
     public static void createTableIfNotExist() {
         try (Connection conn = DriverManager.getConnection(DB_URL);
              Statement stmt = conn.createStatement()) {
@@ -27,7 +27,7 @@ public class NotificationsDatabaseStorage {
         }
     }
 
-    /** Load all notifications from the database */
+    //Load all notifications from the database
     public static Map<Integer, Notifications> load() {
         Map<Integer, Notifications> notifications = new java.util.HashMap<>();
 
@@ -54,7 +54,7 @@ public class NotificationsDatabaseStorage {
         return notifications;
     }
 
-    /** Save all notifications to the database safely */
+    // Save all notifications to the database safely
     public static void save(Map<Integer, Notifications> notificationsMap) {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             conn.setAutoCommit(false);

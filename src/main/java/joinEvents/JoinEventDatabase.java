@@ -8,13 +8,13 @@ public class JoinEventDatabase {
     private Map<Integer, JoinEvent> joinEvents = new HashMap<>();
     private int nextId = 1;
 
-    /* ====================== LOAD / SAVE SUPPORT ======================= */
 
+    //returns all joins
     public Map<Integer, JoinEvent> getJoinEvents() {
         return joinEvents;
     }
 
-    // FIX — controller calls this at startup
+    // loads join records from the db to memory
     public void setJoinEvents(Map<Integer, JoinEvent> events) {
         if (events != null) {
             this.joinEvents = events;
@@ -23,16 +23,16 @@ public class JoinEventDatabase {
         }
     }
 
-    /* ======================= ID GENERATION ============================ */
 
-    // FIX — controller uses this
+
+    // generates the new id
     public int generateNewId() {
         return nextId++;
     }
 
-    /* ====================== CRUD OPERATIONS ============================ */
 
-    // FIX — controller calls add(join)
+    //CRUD methods
+
     public void add(JoinEvent joinEvent) {
         joinEvents.put(joinEvent.getJoinId(), joinEvent);
     }
@@ -41,12 +41,6 @@ public class JoinEventDatabase {
         return joinEvents.get(id);
     }
 
-    // Update if needed later
-    public void update(int id, JoinEvent event) {
-        if (joinEvents.containsKey(id)) joinEvents.put(id, event);
-    }
-
-    // FIX — controller calls delete(int)
     public void delete(int id) {
         joinEvents.remove(id);
     }

@@ -10,9 +10,7 @@ public class EventDatabaseStorage {
 
     private static final String DB_URL = "jdbc:sqlite:EventDatabase.sqlite";
 
-    /**
-     * Ensure the events table exists.
-     */
+    // creates the SQLite table if its doesnt already exist
     public static void createTableIfNotExist() {
         String sql = "CREATE TABLE IF NOT EXISTS events (" +
                 "eventId INTEGER PRIMARY KEY, " +
@@ -38,9 +36,7 @@ public class EventDatabaseStorage {
         }
     }
 
-    /**
-     * Load all events from DB. Ensures table exists first.
-     */
+    // loads all events from the database and returns them as a map
     public static Map<Integer, Event> load() {
         createTableIfNotExist(); // ensure table exists before loading
 
@@ -79,9 +75,7 @@ public class EventDatabaseStorage {
         return eventMap;
     }
 
-    /**
-     * Save all events to DB. Wipes existing data and inserts current map.
-     */
+    // saves the entire in-memory event map to the database
     public static void save(Map<Integer, Event> eventMap) {
         createTableIfNotExist(); // ensure table exists before saving
 
@@ -90,11 +84,12 @@ public class EventDatabaseStorage {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             conn.setAutoCommit(false);
 
-            // Wipe existing data
+            // delete old data
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute("DELETE FROM events");
             }
 
+            // insert all current events
             try (PreparedStatement pstmt = conn.prepareStatement(sqlInsert)) {
                 for (Event e : eventMap.values()) {
                     pstmt.setInt(1, e.getEventId());
@@ -119,12 +114,5 @@ public class EventDatabaseStorage {
         } catch (SQLException e) {
             System.err.println("Event save error: " + e.getMessage());
         }
-    }
-
-    /**
-     * Convenience init method to call at app startup
-     */
-    public static void init() {
-        createTableIfNotExist();
     }
 }

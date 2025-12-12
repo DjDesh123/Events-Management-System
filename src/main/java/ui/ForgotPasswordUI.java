@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class ForgotPasswordUI extends JFrame {
 
-    private final UserController userController; // use the shared controller
-    private String storedEmail; // The email of the account we found
+    private final UserController userController;
+    private String storedEmail;
     private User account;
 
     public ForgotPasswordUI(UserController userController) {
@@ -23,7 +23,7 @@ public class ForgotPasswordUI extends JFrame {
 
         CardLayout cl = (CardLayout) getContentPane().getLayout();
 
-        // ================= EMAIL SCREEN =================
+        // email screen
         JPanel emailPanel = new JPanel(new GridBagLayout());
         emailPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
@@ -45,7 +45,7 @@ public class ForgotPasswordUI extends JFrame {
         gbc.gridy = 2;
         emailPanel.add(next, gbc);
 
-        // ================= RESET PASSWORD SCREEN =================
+        // reset password screen
         JPanel resetPanel = new JPanel(new GridBagLayout());
         resetPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
@@ -78,9 +78,9 @@ public class ForgotPasswordUI extends JFrame {
         add(emailPanel, "email");
         add(resetPanel, "reset");
 
-        // ================= BUTTON LOGIC =================
+        //button logic
 
-        // Step 1 — check if user exists
+        // check if user exists
         next.addActionListener(e -> {
             String email = emailField.getText().trim();
 
@@ -91,11 +91,11 @@ public class ForgotPasswordUI extends JFrame {
                 return;
             }
 
-            storedEmail = email; // save for later
-            cl.show(getContentPane(), "reset"); // move to second screen
+            storedEmail = email;
+            cl.show(getContentPane(), "reset");
         });
 
-        // Step 2 — update password
+        // update password
         save.addActionListener(e -> {
             String p1 = new String(pass1.getPassword());
             String p2 = new String(pass2.getPassword());

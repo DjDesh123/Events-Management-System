@@ -24,6 +24,7 @@ public class CreateEventUI extends JFrame {
     private final NotificationController notificationController;
     private final UserController userController;
 
+    //constructor
     public CreateEventUI(User currentUser, EventDatabase eventDatabase,
                          JoinEventDatabase joinEventDatabase, EventController eventController,
                          NotificationController notificationController, UserController userController) {
@@ -45,7 +46,7 @@ public class CreateEventUI extends JFrame {
 
         setVisible(true);
     }
-
+    // sidebar buttons
     private JPanel sidebar() {
         JPanel side = new JPanel();
         side.setPreferredSize(new Dimension(180, getHeight()));
@@ -75,7 +76,7 @@ public class CreateEventUI extends JFrame {
 
         return side;
     }
-
+    //  helper to create sidebar buttons
     private JButton sideButton(String text) {
         JButton btn = new JButton(text);
         btn.setMaximumSize(new Dimension(180, 40));
@@ -84,7 +85,7 @@ public class CreateEventUI extends JFrame {
         btn.setFocusPainted(false);
         return btn;
     }
-
+    //  main content of the page
     private JPanel mainContent() {
         JPanel wrap = new JPanel(new GridBagLayout());
         wrap.setBackground(Color.WHITE);
@@ -125,7 +126,7 @@ public class CreateEventUI extends JFrame {
         wrap.add(box);
         return wrap;
     }
-
+    //handles event creation on submit
     private void handleSubmit(JTextField titleField, JTextField locationField,
                               JPanel startDatePanel, JPanel endDatePanel,
                               JPanel startTimePanel, JPanel endTimePanel,
@@ -165,6 +166,7 @@ public class CreateEventUI extends JFrame {
         }
     }
 
+    // Create wide input field
     private JTextField wideInput(String label) {
         JTextField f = new JTextField();
         f.setPreferredSize(new Dimension(600, 35));
@@ -173,6 +175,7 @@ public class CreateEventUI extends JFrame {
         return f;
     }
 
+    // create short input field
     private JTextField shortInput(String placeholder) {
         JTextField f = new JTextField();
         f.setPreferredSize(new Dimension(80, 35));
@@ -180,18 +183,21 @@ public class CreateEventUI extends JFrame {
         return f;
     }
 
+    //panel for date inputs
     private JPanel datePanel() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         p.add(shortInput("DD")); p.add(shortInput("MM")); p.add(shortInput("YYYY"));
         return p;
     }
 
+    // panel for time inputs
     private JPanel timePanel() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         p.add(shortInput("HH")); p.add(shortInput("MM"));
         return p;
     }
 
+    // parse localDate from panel
     private LocalDate parseDatePanel(JPanel panel) {
         int day = Integer.parseInt(((JTextField) panel.getComponent(0)).getText());
         int month = Integer.parseInt(((JTextField) panel.getComponent(1)).getText());
@@ -199,6 +205,7 @@ public class CreateEventUI extends JFrame {
         return LocalDate.of(year, month, day);
     }
 
+    //Parse LocalTime from panel
     private LocalTime parseTimePanel(JPanel panel) {
         int hour = Integer.parseInt(((JTextField) panel.getComponent(0)).getText());
         int minute = Integer.parseInt(((JTextField) panel.getComponent(1)).getText());

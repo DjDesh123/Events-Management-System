@@ -1,6 +1,7 @@
 package user;
 
 public class User{
+
     // all attributes needed to make a user
     private int userId;
     private String firstName;
@@ -19,6 +20,7 @@ public class User{
     private accountType accountType;
 
 
+    // constructor
     public User(int userId,String firstName, String lastName, String email, String password, String salt, accountType accountType) {
         this.userId = userId;
         this.firstName = firstName;
@@ -61,7 +63,7 @@ public class User{
     }
 
 
-    // SETTER
+    // setters
 
     public void setPassword(String password) {
         this.password =  password;

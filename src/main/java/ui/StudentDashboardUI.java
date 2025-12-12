@@ -29,6 +29,7 @@ public class StudentDashboardUI extends JFrame {
     private int upcomingIndex = 0;
     private int registeredIndex = 0;
 
+    //constructor
     public StudentDashboardUI(User currentUser,
                               EventDatabase eventDatabase,
                               JoinEventDatabase joinEventDatabase,
@@ -55,6 +56,7 @@ public class StudentDashboardUI extends JFrame {
         setVisible(true);
     }
 
+    //load events for dashboard
     private void loadEvents() {
         upcomingEvents = eventDatabase.getAllEvents().values().stream()
                 .filter(e -> e.getEndDate().isAfter(LocalDate.now()) || e.getEndDate().isEqual(LocalDate.now()))
@@ -67,6 +69,7 @@ public class StudentDashboardUI extends JFrame {
                 .collect(Collectors.toList());
     }
 
+    // sidebar panel with navigation buttons
     private JPanel sidebar() {
         JPanel side = new JPanel();
         side.setPreferredSize(new Dimension(180, getHeight()));
@@ -85,7 +88,7 @@ public class StudentDashboardUI extends JFrame {
         JButton notificationBtn = sideButton("Notifications");
         notificationBtn.addActionListener(e -> new NotificationsUI(currentUser,notificationController));
 
-        // ===== HERE — Now opens SettingsUI =====
+
         JButton settingsBtn = sideButton("Settings");
         settingsBtn.addActionListener(e -> new SettingsUI(this,userController));
 
@@ -98,6 +101,7 @@ public class StudentDashboardUI extends JFrame {
         return side;
     }
 
+    // Helper to create styled sidebar buttons
     private JButton sideButton(String name) {
         JButton btn = new JButton(name);
         btn.setMaximumSize(new Dimension(180,40));
@@ -107,6 +111,7 @@ public class StudentDashboardUI extends JFrame {
         return btn;
     }
 
+    // Main content panel with upcoming & registered event sections
     private JPanel mainContent() {
         JPanel main = new JPanel();
         main.setLayout(new BoxLayout(main,BoxLayout.Y_AXIS));
@@ -117,6 +122,7 @@ public class StudentDashboardUI extends JFrame {
         return main;
     }
 
+    // Create a section for events
     private JPanel eventSection(String title,List<Event> events,boolean isUpcoming) {
         JPanel section = new JPanel(new BorderLayout());
         section.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
@@ -164,6 +170,7 @@ public class StudentDashboardUI extends JFrame {
         return section;
     }
 
+    // event details
     private JPanel eventCard(Event e){
         JPanel card = new JPanel(new BorderLayout());
         card.setPreferredSize(new Dimension(220,160));
@@ -189,12 +196,14 @@ public class StudentDashboardUI extends JFrame {
 
         return card;
     }
-
+    // reload the dashboard data
     private void reloadDashboard(){
         loadEvents();
         refreshUI();
     }
 
+
+    // refresh the content
     private void refreshUI(){
         getContentPane().removeAll();
         add(sidebar(),BorderLayout.WEST);

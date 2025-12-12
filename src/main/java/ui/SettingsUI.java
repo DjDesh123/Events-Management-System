@@ -102,7 +102,6 @@ public class SettingsUI extends JFrame {
             }
         }
 
-        // Java 11 compatible
         if (comp instanceof Container) {
             Container container = (Container) comp;
             for (Component child : container.getComponents()) {

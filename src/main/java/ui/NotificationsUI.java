@@ -11,6 +11,7 @@ public class NotificationsUI extends JFrame {
     private final NotificationController controller;
     private final User user;
 
+    // constructor
     public NotificationsUI(User user, NotificationController controller) {
         this.user = user;
         this.controller = controller;
@@ -31,6 +32,8 @@ public class NotificationsUI extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+
+        // shows message if no notification
         if(list.isEmpty()){
             JLabel none = new JLabel("No notifications");
             none.setFont(new Font("Arial",Font.ITALIC,16));
@@ -46,7 +49,7 @@ public class NotificationsUI extends JFrame {
                 del.addActionListener(e -> {
                     controller.deleteNotification(n.getNotId());
                     dispose();
-                    new NotificationsUI(user, controller); // reuse same controller
+                    new NotificationsUI(user, controller);
                 });
 
                 box.add(del,BorderLayout.EAST);

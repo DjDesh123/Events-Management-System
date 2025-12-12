@@ -96,7 +96,7 @@ public class UserController {
             return false;
         }
     }
-
+    // handles login
     public User logIn(String email, String password) {
         System.out.println("=== LOGIN ATTEMPT ===");
         System.out.println("Input email: '" + email + "'");
@@ -145,7 +145,6 @@ public class UserController {
         System.out.println("Password updated for user: " + email);
         return true;
     }
-    // In UserController
     public User getUserByEmail(String email) {
         return userDatabase.getByEmail(email);
     }

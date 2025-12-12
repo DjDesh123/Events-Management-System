@@ -11,6 +11,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// UI for viewing and editing a specific event's details
 public class ViewDetailsUI extends JFrame {
 
     private final User currentUser;
@@ -20,6 +21,7 @@ public class ViewDetailsUI extends JFrame {
     private final JoinEventDatabase joinEventDatabase;
     private final NotificationController notificationController;
 
+    // Constructor initializes the frame and sets up the UI
     public ViewDetailsUI(User currentUser, Event event, EventDatabase eventDatabase,
                          EventController eventController, JoinEventDatabase joinEventDatabase,
                          NotificationController notificationController) {
@@ -36,31 +38,38 @@ public class ViewDetailsUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        add(mainContent(), BorderLayout.CENTER);
+        add(mainContent(), BorderLayout.CENTER); // Add main content panel
         setVisible(true);
     }
 
+    // Main panel containing all fields and buttons for the event
     private JPanel mainContent() {
-        JPanel wrap = new JPanel(new GridBagLayout());
+        JPanel wrap = new JPanel(new GridBagLayout()); // Center the content
         wrap.setBackground(Color.WHITE);
+
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
         box.setBackground(new Color(250, 250, 250));
-        box.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        box.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60)); // Padding
 
-        // TITLE
+        // Title
         JLabel titleLabel = new JLabel("View / Edit Event", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         box.add(titleLabel);
         box.add(Box.createVerticalStrut(25));
 
-        JTextField titleField = wideInput("Event Title"); titleField.setText(event.getEventTitle());
-        JTextField locationField = wideInput("Location"); locationField.setText(event.getLocation());
-        box.add(titleField); box.add(Box.createVerticalStrut(15)); box.add(locationField);
+        // Text fields for title and location
+        JTextField titleField = wideInput("Event Title");
+        titleField.setText(event.getEventTitle());
+        JTextField locationField = wideInput("Location");
+        locationField.setText(event.getLocation());
+        box.add(titleField);
+        box.add(Box.createVerticalStrut(15));
+        box.add(locationField);
         box.add(Box.createVerticalStrut(15));
 
-        // Dates
+        //dates
         JPanel startDatePanel = datePanel(event.getStartDate());
         JPanel endDatePanel = datePanel(event.getEndDate());
         box.add(new JLabel("Start Date")); box.add(startDatePanel);
@@ -68,7 +77,7 @@ public class ViewDetailsUI extends JFrame {
         box.add(new JLabel("End Date")); box.add(endDatePanel);
         box.add(Box.createVerticalStrut(15));
 
-        // Times
+        //times
         JPanel startTimePanel = timePanel(event.getStartTime());
         JPanel endTimePanel = timePanel(event.getEndTime());
         box.add(new JLabel("Start Time")); box.add(startTimePanel);
@@ -76,19 +85,22 @@ public class ViewDetailsUI extends JFrame {
         box.add(new JLabel("End Time")); box.add(endTimePanel);
         box.add(Box.createVerticalStrut(15));
 
-        JTextField capacityField = wideInput("Capacity"); capacityField.setText(String.valueOf(event.getMaxAttendees()));
-        JTextField descriptionField = wideInput("Description"); descriptionField.setText(event.getDescription());
+        //capacity and description
+        JTextField capacityField = wideInput("Capacity");
+        capacityField.setText(String.valueOf(event.getMaxAttendees()));
+        JTextField descriptionField = wideInput("Description");
+        descriptionField.setText(event.getDescription());
         box.add(capacityField); box.add(Box.createVerticalStrut(10)); box.add(descriptionField);
         box.add(Box.createVerticalStrut(25));
 
-        // Buttons
+        //buttons panel for saving or deleting event
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
         JButton saveBtn = new JButton("Save Changes");
         saveBtn.addActionListener(e -> saveEvent(titleField, locationField, startDatePanel, endDatePanel,
                 startTimePanel, endTimePanel, capacityField, descriptionField));
 
         JButton deleteBtn = new JButton("Delete Event");
-        deleteBtn.setForeground(Color.RED);
+        deleteBtn.setForeground(Color.RED); // Emphasize destructive action
         deleteBtn.addActionListener(e -> deleteEvent());
 
         buttonsPanel.add(saveBtn); buttonsPanel.add(deleteBtn);
@@ -98,11 +110,13 @@ public class ViewDetailsUI extends JFrame {
         return wrap;
     }
 
+    //save changes to the event
     private void saveEvent(JTextField titleField, JTextField locationField,
                            JPanel startDatePanel, JPanel endDatePanel,
                            JPanel startTimePanel, JPanel endTimePanel,
                            JTextField capacityField, JTextField descriptionField) {
         try {
+            //parse date and time fields
             LocalDate startDate = LocalDate.of(
                     Integer.parseInt(((JTextField)startDatePanel.getComponent(2)).getText()), // YEAR
                     Integer.parseInt(((JTextField)startDatePanel.getComponent(1)).getText()), // MONTH
@@ -127,16 +141,17 @@ public class ViewDetailsUI extends JFrame {
 
             int capacity = Integer.parseInt(capacityField.getText());
 
+            //call controller to edit the event
             boolean success = eventController.editEvent(event.getEventId(),
                     titleField.getText(), locationField.getText(),
                     startDate, endDate, startTime, endTime,
                     capacity, descriptionField.getText());
 
             if (success) {
-                // Notify attendees
+                //notify attendees about the update
                 notificationController.notifyAttendees(event, "Event " + event.getEventTitle() + " was updated!");
                 JOptionPane.showMessageDialog(this, "Event updated successfully!");
-                dispose();
+                dispose(); // Close window
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid data or capacity less than current attendees.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -149,6 +164,7 @@ public class ViewDetailsUI extends JFrame {
         }
     }
 
+    // Delete the event after confirmation
     private void deleteEvent() {
         int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this event?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -159,6 +175,7 @@ public class ViewDetailsUI extends JFrame {
         }
     }
 
+    //helper to create wide text fields with a titled border
     private JTextField wideInput(String label) {
         JTextField f = new JTextField();
         f.setPreferredSize(new Dimension(600, 35));
@@ -167,6 +184,7 @@ public class ViewDetailsUI extends JFrame {
         return f;
     }
 
+    //helper to create a date input panel (day/month/year)
     private JPanel datePanel(LocalDate date) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5,0));
         JTextField day = new JTextField(String.valueOf(date.getDayOfMonth()), 2);
@@ -176,6 +194,7 @@ public class ViewDetailsUI extends JFrame {
         return p;
     }
 
+    //helper to create a time input panel (hour/minute)
     private JPanel timePanel(LocalTime time) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 5,0));
         JTextField hour = new JTextField(String.valueOf(time.getHour()), 2);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Event{
+    // core event details
     private int eventId;
     private int creatorId;
     private String eventTitle;
@@ -20,6 +21,7 @@ public class Event{
     private List<User> attendee;
     private String description;
 
+    // event constructor
     public Event(int  eventId, int creatorId, String eventTitle, String location, LocalDate startDate, LocalDate endDate,LocalTime startTime,LocalTime endTime,int maxAttendees, List<User> initialAttendees, String description) {
         this.eventId = eventId;
         this.creatorId = creatorId;
@@ -31,7 +33,7 @@ public class Event{
         this.endTime = endTime;
         this.maxAttendees = Math.max(0, maxAttendees);
 
-        // ensure attendee list exists (no hardcoded 0)
+        // ensure attendee list exists
         if (initialAttendees != null) {
             this.attendee = new ArrayList<>(initialAttendees);
         } else {
@@ -40,10 +42,12 @@ public class Event{
         this.description = description == null ? "" : description;
     }
 
+    // prevents negative attendee limits
     public boolean isFull() {
         return attendee.size() >= maxAttendees;
     }
 
+    // attempts to add a new attendee while checking if its full
     public boolean addAttendee(User user){
         if(isFull()) return false;
         return attendee.add(user);

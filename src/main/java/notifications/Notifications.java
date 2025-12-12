@@ -7,7 +7,7 @@ public class Notifications{
     private int creatorId;
     private String message;
 
-
+    // constructor
     public Notifications(int notId,int userId, int eventId, int creatorId, String message) {
         this.notId = notId;
         this.userId = userId;
@@ -17,7 +17,7 @@ public class Notifications{
     }
 
 
-
+    //getters
     public int getNotId() {return notId;}
 
     public int getUserId() {

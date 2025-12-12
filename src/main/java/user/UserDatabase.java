@@ -39,12 +39,6 @@ public class UserDatabase {
         return userMap.get(userId);
     }
 
-    // Delete user
-    public void delete(int userId) {
-        userMap.remove(userId);
-        UserDatabaseStorage.save(userMap);
-    }
-
     // Get all users
     public Map<Integer, User> getUsers() {
         return userMap;
@@ -60,9 +54,6 @@ public class UserDatabase {
         return null;
     }
 
-    // Convenience method to persist all users manually
-    public void saveAll() {
-        UserDatabaseStorage.save(userMap);
-    }
+
 }
 

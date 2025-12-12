@@ -24,10 +24,11 @@ public class SearchUI extends JFrame {
     private final NotificationController notificationController;
     private final UserController userController;
 
-    private JPanel eventsPanel;
+    private JPanel eventsPanel; // Panel to hold event cards
     private JTextField searchField;
     private JComboBox<String> filterBox;
 
+    // Constructor sets up UI
     public SearchUI(User currentUser,
                     EventDatabase eventDatabase,
                     JoinEventDatabase joinEventDatabase,
@@ -47,13 +48,14 @@ public class SearchUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        add(createSidebar(), BorderLayout.WEST);
-        add(mainPanel(), BorderLayout.CENTER);
+        add(createSidebar(), BorderLayout.WEST); // add navigation
+        add(mainPanel(), BorderLayout.CENTER);  // add main search panel
 
-        updateEventList();
+        updateEventList(); // show events initially
         setVisible(true);
     }
 
+    // Main panel  and events
     private JPanel mainPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
@@ -90,6 +92,7 @@ public class SearchUI extends JFrame {
         return mainPanel;
     }
 
+    // Sidebar buttons
     private JPanel createSidebar() {
         JPanel side = new JPanel();
         side.setPreferredSize(new Dimension(180, getHeight()));
@@ -108,11 +111,9 @@ public class SearchUI extends JFrame {
         JButton searchBtn = sideButton("Search");
         searchBtn.setEnabled(false);
 
-        // --- SETTINGS NOW WORKS ---
         JButton settingsBtn = sideButton("Settings");
         settingsBtn.addActionListener(e ->
-                new SettingsUI(this,userController)   // ← opens settings immediately
-        );
+                new SettingsUI(this,userController));
 
         side.add(homeBtn);
         side.add(searchBtn);
@@ -129,6 +130,7 @@ public class SearchUI extends JFrame {
         return side;
     }
 
+    //helper for sidebar buttons
     private JButton sideButton(String text) {
         JButton btn = new JButton(text);
         btn.setMaximumSize(new Dimension(180, 40));
@@ -138,6 +140,7 @@ public class SearchUI extends JFrame {
         return btn;
     }
 
+    // refresh event list based on search/filter
     private void updateEventList() {
         String query = searchField.getText().trim().toLowerCase();
         String filter = (String) filterBox.getSelectedItem();
@@ -172,6 +175,7 @@ public class SearchUI extends JFrame {
         eventsPanel.repaint();
     }
 
+    //create card for single event
     private JPanel eventCard(Event e) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
